@@ -2,7 +2,7 @@ library(Microsoft365R)
 library(readxl)
 
 od <- get_business_onedrive(auth_type="device_code")
- 
+
 load_shared_dataframe <- function(od, path)
 {
    items <- as.list(strsplit(path, "/")[[1]])
@@ -11,7 +11,9 @@ load_shared_dataframe <- function(od, path)
    objs <- lapply(shared_files$value, function(obj) obj$remoteItem)
    directory_depths <- items[-c(1, length(items))]
 
-   matching_folder <- objs[[which(unlist(lapply(objs, function(obj) obj$name %in% items[1])))]]
+   matching_folder <- objs[[which(unlist(lapply(objs, function(obj) {
+     if(is.null(obj$name)) {FALSE} else {obj$name %in% items[1]}
+   })))]]
    
    result <- ms_drive_item$new(od$token, od$tenant, matching_folder)
    
@@ -21,12 +23,20 @@ load_shared_dataframe <- function(od, path)
   
    type = "df"
   
-   if(grepl("rds", items[length(items)])) {
+   if(grepl(".rds", items[length(items)])) {
      type = "rds"
    }
    
-   if(grepl("RData", items[length(items)])) {
+   if(grepl(".RData", items[length(items)])) {
      type = "rdata"
+   }
+   
+   if(grepl(".xlsx", items[length(items)])) {
+     type = "xlsx"
+   }
+   
+   if(grepl(".xls", items[length(items)])) {
+     type = "xls"
    }
    
    if(type == "df") {
@@ -47,9 +57,19 @@ load_shared_dataframe <- function(od, path)
      } else {
        result <- result$load_rdata()
      }
+   } else if(type == "xlsx") {
+     infile <- paste0(tempfile(), ".xlsx")
+     on.exit(unlink(infile))
+     result <- result$download(dest=infile)
+     result <- readxl::read_excel(infile)
+   } else if(type == "xls") {
+     infile <- paste0(tempfile(), ".xls")
+     on.exit(unlink(infile))
+     result <- result$download(dest=infile)
+     result <- readxl::read_excel(infile)
    }
 }
  
-x <- load_shared_dataframe(od, 'parentfolder/subfolder/item.csv')
+x <- load_shared_dataframe(od, 'my_shared_excel_file.rdata')
 
 x
