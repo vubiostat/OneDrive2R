@@ -70,6 +70,6 @@ load_shared_dataframe <- function(od, path)
    }
 }
  
-x <- load_shared_dataframe(od, 'my_shared_excel_file.rdata')
+x <- load_shared_dataframe(od, 'my_shared_file.rdata')
 
 x
