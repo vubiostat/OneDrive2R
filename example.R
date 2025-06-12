@@ -11,7 +11,7 @@ shared <- function(auth)
   lapply(shared_objs$value, function(obj) obj$remoteItem)
 }
 
-one_drive_2_R <- function(auth, path)
+one_drive_2_R <- function(auth, path, use.readr=FALSE, ...)
 {
   items        <- unlist(as.list(strsplit(path, "/")[[1]]))
   subdirs      <- items[-c(1, length(items))]
@@ -33,13 +33,14 @@ one_drive_2_R <- function(auth, path)
           if(grepl(".RData$", filename)) "rdata" else
           if(grepl(".xlsx$",  filename)) "xlsx"  else
           if(grepl(".xls$",   filename)) "xls"   else
-          if(grepl(".csv$",   filename)) "csv"   else
                                          "df"
 
+  if(grepl(".csv$", filename) && !use.readr) type <- "csv"
+
   # Do the final load and return result
-  if(type == "df")    item$load_dataframe() else
-  if(type == "rds")   item$load_rds()       else
-  if(type == "rdata") item$load_rdata()     else
+  if(type == "df")    item$load_dataframe(...) else
+  if(type == "rds")   item$load_rds()          else
+  if(type == "rdata") item$load_rdata()        else
   {
     # Microsoft365R does not handle these data types
     # Unfortunately must download.
@@ -48,9 +49,8 @@ one_drive_2_R <- function(auth, path)
     on.exit(unlink(infile))  # This is the auto delete
     item$download(dest=infile)
 
-    if(type == "xlsx" || type == "xls") readxl::read_excel(infile) else
-    if(type == "csv")                   read.csv(infile)           else
+    if(type == "xlsx" || type == "xls") readxl::read_excel(infile, ...) else
+    if(type == "csv")                   read.csv(infile, ...)           else
     stop("UNHANDLED FILE EXTENSION")
   }
 }
-
