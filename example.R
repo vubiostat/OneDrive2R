@@ -8,21 +8,23 @@ shared <- function(auth)
 {
   shared_objs <- auth$do_operation("sharedWithMe",
                                     options=list(allowexternal="true"))
-  lapply(shared_objs$value, function(obj) obj$remoteItem)
+  objs <- lapply(shared_objs$value, function(obj) obj$remoteItem)
+  names(objs)  <- sapply(objs, function(o) o$name)
+
+  objs
 }
 
 one_drive_2_R <- function(auth, path, use.readr=FALSE, ...)
 {
-  items        <- unlist(as.list(strsplit(path, "/")[[1]]))
+  items        <- strsplit(path, "/")[[1]]
   subdirs      <- items[-c(1, length(items))]
   objs         <- shared(auth)
-  names        <- unlist(lapply(objs, function(o) o$name))
   filename     <- items[length(items)]
 
-  if(sum(names %in% items[1]) == 0)
-    stop(paste("Requested top level of path must be shared name. Check: `shared(auth)`"))
+  if(is.null(objs[[items[1]]]))
+    stop(paste("Requested top level of path must be shared name. Check: `names(shared(auth))`"))
 
-  item <- ms_drive_item$new(auth$token, auth$tenant, objs[[which(names %in% items[1])]])
+  item <- ms_drive_item$new(auth$token, auth$tenant, objs[[items[1]]])
 
   # Go down any sub directories
   for (d in subdirs) item <- item$get_item(d)
