@@ -1,75 +1,56 @@
 library(Microsoft365R)
 library(readxl)
 
-od <- get_business_onedrive(auth_type="device_code")
+# Example authentication
+# auth <- get_business_onedrive(auth_type="device_code")
 
-load_shared_dataframe <- function(od, path)
+shared <- function(auth)
 {
-   items <- as.list(strsplit(path, "/")[[1]])
-   shared_files <- od$do_operation("sharedWithMe", options=list(allowexternal="true"))
- 
-   objs <- lapply(shared_files$value, function(obj) obj$remoteItem)
-   directory_depths <- items[-c(1, length(items))]
-
-   matching_folder <- objs[[which(unlist(lapply(objs, function(obj) {
-     if(is.null(obj$name)) {FALSE} else {obj$name %in% items[1]}
-   })))]]
-   
-   result <- ms_drive_item$new(od$token, od$tenant, matching_folder)
-   
-   for (d in directory_depths) {
-     result <- result$get_item(d)
-   }
-  
-   type = "df"
-  
-   if(grepl(".rds", items[length(items)])) {
-     type = "rds"
-   }
-   
-   if(grepl(".RData", items[length(items)])) {
-     type = "rdata"
-   }
-   
-   if(grepl(".xlsx", items[length(items)])) {
-     type = "xlsx"
-   }
-   
-   if(grepl(".xls", items[length(items)])) {
-     type = "xls"
-   }
-   
-   if(type == "df") {
-     if(length(directory_depths) > 0) {
-       result <- result$get_item(items[length(items)])$load_dataframe()
-     } else {
-       result <- result$load_dataframe()
-     }
-   } else if(type == "rds") {
-     if(length(directory_depths) > 0) {
-       result <- result$get_item(items[length(items)])$load_rds()
-     } else {
-       result <- result$load_rds()
-     }
-   } else if(type == "rdata") {
-     if(length(directory_depths) > 0) {
-       result <- result$get_item(items[length(items)])$load_rdata()
-     } else {
-       result <- result$load_rdata()
-     }
-   } else if(type == "xlsx") {
-     infile <- paste0(tempfile(), ".xlsx")
-     on.exit(unlink(infile))
-     result <- result$download(dest=infile)
-     result <- readxl::read_excel(infile)
-   } else if(type == "xls") {
-     infile <- paste0(tempfile(), ".xls")
-     on.exit(unlink(infile))
-     result <- result$download(dest=infile)
-     result <- readxl::read_excel(infile)
-   }
+  shared_objs <- auth$do_operation("sharedWithMe",
+                                    options=list(allowexternal="true"))
+  lapply(shared_objs$value, function(obj) obj$remoteItem)
 }
- 
-x <- load_shared_dataframe(od, 'my_shared_file.rdata')
 
-x
+one_drive_2_R <- function(auth, path)
+{
+  items        <- unlist(as.list(strsplit(path, "/")[[1]]))
+  subdirs      <- items[-c(1, length(items))]
+  objs         <- shared(auth)
+  names        <- unlist(lapply(objs, function(o) o$name))
+  filename     <- items[length(items)]
+
+  if(sum(names %in% items[1]) == 0)
+    stop(paste("Requested top level of path must be shared name. Check: `shared(auth)`"))
+
+  item <- ms_drive_item$new(auth$token, auth$tenant, objs[[which(names %in% items[1])]])
+
+  # Go down any sub directories
+  for (d in subdirs) item <- item$get_item(d)
+  # If the length of items is greater than 1, still need to get the final item
+  if(length(items) > 1) item <- item$get_item(filename)
+
+  type <- if(grepl(".rds$",   filename)) "rds"   else
+          if(grepl(".RData$", filename)) "rdata" else
+          if(grepl(".xlsx$",  filename)) "xlsx"  else
+          if(grepl(".xls$",   filename)) "xls"   else
+          if(grepl(".csv$",   filename)) "csv"   else
+                                         "df"
+
+  # Do the final load and return result
+  if(type == "df")    item$load_dataframe() else
+  if(type == "rds")   item$load_rds()       else
+  if(type == "rdata") item$load_rdata()     else
+  {
+    # Microsoft365R does not handle these data types
+    # Unfortunately must download.
+    # Utilize a tmp file that is immediately deleted.
+    infile <- paste0(tempfile(), type)
+    on.exit(unlink(infile))  # This is the auto delete
+    item$download(dest=infile)
+
+    if(type == "xlsx" || type == "xls") readxl::read_excel(infile) else
+    if(type == "csv")                   read.csv(infile)           else
+    stop("UNHANDLED FILE EXTENSION")
+  }
+}
+
