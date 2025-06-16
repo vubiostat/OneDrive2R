@@ -2,12 +2,14 @@
 
 Load shared data directly from OneDrive to R.
 
+This is not published to CRAN at present. To install please use `devtools::install_github('vubiostat/OneDrive2R')`.
+
 ## FAQ
 
 ### _Why would I want to do this when OneDrive copies data locally?_
 
 Having confidential data containing private health information (PHI) or private identifying information (PII) on a portable computing device is a security risk.
-Some institutions even mandate by policy that PHI/PII are never stored on a portable computing device. At odds with this is when Microsoft OneDrive/SharePoint is an approved method of data storage and access because by _default_ it stores the data locally when the data is mapped! This is a seemingly impossible to comply situation when needing to analyze confidential data in a secure manner using R. 
+Some institutions even mandate by policy that PHI/PII are never stored on a portable computing device. At odds with this is when Microsoft OneDrive/SharePoint is an approved method of data storage and access because by _default_ it stores the data locally when the data is mapped! This is a seemingly impossible to comply with situation when needing to analyze confidential data in a secure manner using R. 
 
 This package loads the data directly into memory in an R environment. Giving the user peace of mind about utilizing good security practices around sensitive data.
 

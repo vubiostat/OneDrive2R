@@ -1,5 +1,5 @@
-# Copyright (C) 2024-2025 Vanderbilt University,
-# Shawn Garbett, Cole Beck, James Grindstaff
+# Copyright (C) 2024-2025 Shawn Garbett, Cole Beck, James Grindstaff, Lauren
+# Samuels, Vanderbilt University
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
