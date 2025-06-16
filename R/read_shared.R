@@ -80,16 +80,16 @@ read_shared <- function(drive, path, FUN=NULL, ...)
   checkmate::reportAssertions(coll)
   
   filename <- basename(path)
-  items    <- strsplit(dirname(path), "/")[[1]]
+  segments <- strsplit(dirname(path), "/")[[1]]
   objs     <- shared(drive)
-  top      <- objs[[ifelse(items[1]=='.',filename,items[1])]]
+  top      <- objs[[ifelse(segments[1]=='.',filename,segments[1])]]
 
   if(is.null(top)) stop(paste("Requested top level of path must be shared name. Check: `names(shared(drive))`"))
   # There _should_ be a better way than calling new, but alas
   item     <- ms_drive_item$new(drive$token, drive$tenant, top)
-  if(length(items) > 1)
+  if(length(segments) > 1)
   {
-      fp     <- do.call(file.path, as.list(c(items[-1], filename)))
+      fp     <- do.call(file.path, as.list(c(segments[-1], filename)))
       item   <- item$get_item(fp)
   }
 
@@ -118,9 +118,12 @@ read_shared <- function(drive, path, FUN=NULL, ...)
     if(is.null(FUN)) stop(paste0("Unhandled File Extension '", type, "'"))
   }
 
+  # Cannot do in memory only as it exceeds httr's buffer size
+  # Unfortunately must be written temporarily to disk, use tmp
   infile <- tempfile(fileext = paste0('.', type))
-  on.exit(unlink(infile))  # This is the auto delete
+  # Automatic delete, i.e. upon exiting this function the file is deleted.
+  on.exit(unlink(infile))
   item$download(dest = infile)
-
+  
   FUN(infile, ...)
 }

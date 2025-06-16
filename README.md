@@ -16,14 +16,29 @@ names(shared(drive)) # Look at top level of shared files
 data  <- read.shared(drive, "/SomeDir/sharedata.csv")
 ```
 
+## Terms
+
+* OneDrive  
+One's personal cloud storage provided by Microsoft. Tied to your login email.
+* SharePoint  
+An organization's presence for content, collaboration, workflows, team sites. The term also refers to the to browser-based app to access Microsoft365 tools.
+* Shared File  
+A file shared to you from OneDrive or SharePoint.
+* Sync  
+When a file is set to 'sync', it gets written locally to the drive. If another copy is changed, this one gets the updates written to it. By default a file is not set to 'sync', but the first time one access the file it automatically sets the file 'sync'.
+* Mount / Mapping  
+When a file or directory is 'mounted' or 'mapped' this allows the files to appear locally, under a drive such as "C:\".
+
+New files from the cloud are online-only by default, not taking up disk space. Files are downloaded to the device if a user opens them or chooses the option to “Always keep on this device” from the context menu in File Explorer.
+
 ## FAQ
 
 ### _Why would I want to do this when OneDrive copies data locally?_
 
 Having confidential data containing private health information (PHI) or private identifying information (PII) on a portable computing device is a security risk.
-Some institutions even mandate by policy that PHI/PII are never stored on a portable computing device. At odds with this is when Microsoft OneDrive/SharePoint is an approved method of data storage and access because by _default_ it stores the data locally when the data is mapped! This is a seemingly impossible to comply with situation when needing to analyze confidential data in a secure manner using R. 
+Some institutions even mandate by policy that PHI/PII are never stored on a portable computing device. At odds with this is when Microsoft OneDrive/SharePoint is an approved method of data storage and access because by _default_  any data access locally writes it to disk! This is a seemingly impossible to comply with situation when needing to analyze confidential data in a secure manner using R when it's stored in OneDrive.
 
-This package loads the data directly into memory in an R environment. Giving the user peace of mind about utilizing good security practices around sensitive data.
+This package loads the data directly into memory in an R environment. Giving the user peace of mind about utilizing good security practices around sensitive data and keeping it off disk.
 
 ### _How do I find the path to shared file?_
 
@@ -39,7 +54,7 @@ TBD - Need images from Windows / Mac. How to get rid of.
 
 ### _Is there anything else I should do?_
 
-R asks when exiting if one should save the session to disk. This is equivalent once again to writing sensitive data to disk, and is a bad security practice. It is recommended to disable this feature globally to prevent accidently spooling of PHI/PII to disk. 
+R asks when exiting if one should save the session to disk. This is equivalent once again to writing sensitive data to disk, and is a bad security practice. It is recommended to disable this feature globally to prevent accidentally spooling of PHI/PII to disk. 
 
 For base R the following can be ensured using `usethis::edit_r_profile()` and adding this code:
 
@@ -63,7 +78,7 @@ Please open an [issue](https://github.com/vubiostat/OneDrive2R/issues) and ask f
 
 ## License
 
-`OneDrive2R` A method to read shared files into R memory
+`OneDrive2R` A method to read OneDrive files directly into R memory
 
 Copyright (C) 2024-2025 Shawn Garbett, Cole Beck, James Grindstaff, Lauren Samuels, Vanderbilt University
 
