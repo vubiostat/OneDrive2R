@@ -1,12 +1,15 @@
 Package: OneDrive2R
 Type: Package
-Title: Download files from OneDrive / Sharepoint
+Title: Download shared files from OneDrive / Sharepoint
 Version: 0.1.0
 Authors@R: c(
     person("Shawn", "Garbett", email = "shawn.garbett@vumc.org",
            comment = c(ORCID="0000-0003-4079-5621"),
            role = c("cre","ctb")),
+    person("James", "Grindstaff", role="ctb"),
     person("Cole", "Beck", role = "ctb"),
+    person("Lauren", "Samuels", role="ctb",
+           comment = c(ORCID="0000-0002-7273-5626")),
     person("William", "Sharp", role="ctb"))
 Maintainer: Shawn Garbett <shawn.garbett@vumc.org>
 Description: Access data stored on OneDrive' directly into memory to make sure that PHI/PII is not stored on disk in plain text form.
