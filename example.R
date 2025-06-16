@@ -38,7 +38,7 @@ one_drive_2_R <- function(auth, path, use.readr=FALSE, FUN=NULL, ...)
   item <- ms_drive_item$new(auth$token, auth$tenant, top)
   if(path_len > 1) item <- item$get_item(fp)
 
-  type <- tools::file_ext(filename)
+  type <- tolower(tools::file_ext(filename))
   infile <- tempfile(fileext = paste0('.', type))
   on.exit(unlink(infile))  # This is the auto delete
   item$download(dest = infile)
