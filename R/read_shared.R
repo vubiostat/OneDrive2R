@@ -77,22 +77,29 @@ read_shared <- function(drive, path, FUN=NULL, ...)
   checkmate::assert_function(x = FUN, add = coll, null.ok = TRUE)
   checkmate::reportAssertions(coll)
   
+  # Try the easy path first
+  item     <- tryCatch(drive$get_item(path), silent=TRUE, error=function(e) NULL)
   filename <- basename(path)
-  segments <- strsplit(dirname(path), "/")[[1]]
-  items    <- shared(drive)
-  item     <- items[[ifelse(segments[1]=='.',filename,segments[1])]]
-
-  if(is.null(item)) stop(paste("Requested top level of path must be shared name. Check: `names(shared(drive))`"))
-  if(length(segments) > 1)
+  
+  # Do the shared search
+  if(is.null(item))
   {
+    segments <- strsplit(dirname(path), "/")[[1]]
+    items    <- shared(drive)
+    item     <- items[[ifelse(segments[1]=='.',filename,segments[1])]]
+  
+    if(is.null(item)) stop(paste("Requested top level of path must be shared/owned name. Check: `names(shared(drive))`"))
+    if(length(segments) > 1)
+    {
       fp     <- do.call(file.path, as.list(c(segments[-1], filename)))
-      item   <- item$get_item(fp)
+      item   <- item$get_item(fp) # Request rest of path
+    }
   }
 
-  type <- tolower(tools::file_ext(filename))
+  ext <- tolower(tools::file_ext(filename))
   if(is.null(FUN))
   {
-    FUN <- switch(type,
+    FUN <- switch(ext,
       arff  = foreign::read.arff,
       csv   = utils::read.csv,
       dbf   = foreign::read.dbf,
@@ -111,12 +118,12 @@ read_shared <- function(drive, path, FUN=NULL, ...)
       xpt   = foreign::read.xport,
       NULL
     )
-    if(is.null(FUN)) stop(paste0("Unhandled File Extension '", type, "'"))
+    if(is.null(FUN)) stop(paste0("Unhandled File Extension '", ext, "'"))
   }
 
   # Cannot do in memory only as it exceeds httr's buffer size
   # Unfortunately must be written temporarily to disk, use tmp
-  infile <- tempfile(fileext = paste0('.', type))
+  infile <- tempfile(fileext = paste0('.', ext))
   # Automatic delete, i.e. upon exiting this function the file is deleted.
   on.exit(unlink(infile))
   item$download(dest = infile)
