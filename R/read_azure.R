@@ -40,9 +40,9 @@ shared <- function(drive)
   items
 }
 
-#' Read a file from OneDrive that was shared
+#' Read a data in a file from Azure OneDrive
 #' 
-#' This function given a path will read a file that was shared directly
+#' This function given a path will read a file that was shared or owned directly
 #' into memory. This is important if the file contains information
 #' that one doesn't want stored to disk, e.g. private health information (PHI)
 #' or private identifiable information (PII).
@@ -69,7 +69,7 @@ shared <- function(drive)
 #' data  <- read.shared(drive, "/SomeDir/sharedata.csv")
 #' }
 #' @importFrom checkmate makeAssertCollection assert_class assert_string assert_function reportAssertions
-read_shared <- function(drive, path, FUN=NULL, ...)
+read_azure <- function(drive, path, FUN=NULL, ...)
 {
   coll <- checkmate::makeAssertCollection()
   checkmate::assert_class(x = drive, add = coll, classes="ms_drive")
