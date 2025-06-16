@@ -16,44 +16,44 @@ shared <- function(auth)
 
 one_drive_2_R <- function(auth, path, use.readr=FALSE, FUN=NULL, ...)
 {
-  items        <- strsplit(path, "/")[[1]]
-  subdirs      <- items[-c(1, length(items))]
+  filename     <- basename(path)
+  items        <- strsplit(dirname(path), "/")[[1]]
+  path_len     <- length(items)
+  # case: "path" is top-level filename
+  if(path_len == 1 && items == '.')
+  {
+    items <- fp <- filename
+  } else
+  {
+    fp <- do.call(file.path, as.list(c(items[-1], filename)))
+    items <- items[1]
+  }
   objs         <- shared(auth)
-  filename     <- items[length(items)]
+  top <- objs[[items]]
 
-  if(is.null(objs[[items[1]]]))
+  if(is.null(top))
     stop(paste("Requested top level of path must be shared name. Check: `names(shared(auth))`"))
 
-  item <- ms_drive_item$new(auth$token, auth$tenant, objs[[items[1]]])
+  # there must be a better way to set the root directory to a shared folder
+  item <- ms_drive_item$new(auth$token, auth$tenant, top)
+  if(path_len > 1) item <- item$get_item(fp)
 
-  # Go down any sub directories
-  for (d in subdirs) item <- item$get_item(d)
-  # If the length of items is greater than 1, still need to get the final item
-  if(length(items) > 1) item <- item$get_item(filename)
+  type <- tools::file_ext(filename)
+  infile <- tempfile(fileext = paste0('.', type))
+  on.exit(unlink(infile))  # This is the auto delete
+  item$download(dest = infile)
 
-  type <- if(grepl(".rds$",   filename)) "rds"   else
-          if(grepl(".RData$", filename)) "rdata" else
-          if(grepl(".xlsx$",  filename)) "xlsx"  else
-          if(grepl(".xls$",   filename)) "xls"   else
-                                         "df"
-
-  if(grepl(".csv$", filename) && !use.readr) type <- "csv"
-
-  # Do the final load and return result
-  if(is.null(FUN) && type == "df")    item$load_dataframe(...) else
-  if(is.null(FUN) && type == "rds")   item$load_rds()          else
-  if(is.null(FUN) && type == "rdata") item$load_rdata()        else
+  if(is.null(FUN))
   {
-    # Microsoft365R does not handle these data types
-    # Unfortunately must download.
-    # Utilize a tmp file that is immediately deleted.
-    infile <- paste0(tempfile(), type)
-    on.exit(unlink(infile))  # This is the auto delete
-    item$download(dest=infile)
-
-    if(!is.null(FUN))                   FUN(infile, ...)                else
-    if(type == "xlsx" || type == "xls") readxl::read_excel(infile, ...) else
-    if(type == "csv")                   read.csv(infile, ...)           else
-    stop("UNHANDLED FILE EXTENSION")
+    FUN <- switch(type,
+      xls =,
+      xlsx = readxl::read_excel,
+      csv = ifelse(use.readr, readr::read_delim, read.csv),
+      rds = readRDS,
+      rdata = load,
+      NULL
+    )
+    if(is.null(FUN)) stop("UNHANDLED FILE EXTENSION")
   }
+  FUN(infile, ...)
 }
