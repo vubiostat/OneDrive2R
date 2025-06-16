@@ -20,6 +20,7 @@
 #' object.
 #' 
 #' @param drive A pointer to an ms_drive object from `Microsoft365R`
+#' @param filter 
 #' @return Named list of `Microsoft365R::ms_drive_item`'s shared with user.
 #' @export
 #' @examples
@@ -34,12 +35,9 @@ shared <- function(drive)
   checkmate::assert_class(x = drive, add = coll, classes="ms_drive")
   checkmate::reportAssertions(coll)
   
-  shared_objs <- drive$do_operation("sharedWithMe",
-                                    options=list(allowexternal="true"))
-  objs <- lapply(shared_objs$value, function(obj) obj$remoteItem)
-  names(objs)  <- sapply(objs, function(o) o$name)
-
-  objs
+  items <- drive$list_shared_items(allow_external = TRUE)
+  names(items) <- sapply(items, function(x) x$properties$name)
+  items
 }
 
 #' Read a file from OneDrive that was shared
@@ -81,12 +79,10 @@ read_shared <- function(drive, path, FUN=NULL, ...)
   
   filename <- basename(path)
   segments <- strsplit(dirname(path), "/")[[1]]
-  objs     <- shared(drive)
-  top      <- objs[[ifelse(segments[1]=='.',filename,segments[1])]]
+  items    <- shared(drive)
+  item     <- items[[ifelse(segments[1]=='.',filename,segments[1])]]
 
-  if(is.null(top)) stop(paste("Requested top level of path must be shared name. Check: `names(shared(drive))`"))
-  # There _should_ be a better way than calling new, but alas
-  item     <- ms_drive_item$new(drive$token, drive$tenant, top)
+  if(is.null(item)) stop(paste("Requested top level of path must be shared name. Check: `names(shared(drive))`"))
   if(length(segments) > 1)
   {
       fp     <- do.call(file.path, as.list(c(segments[-1], filename)))
