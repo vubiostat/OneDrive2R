@@ -20,7 +20,6 @@
 #' object.
 #' 
 #' @param drive A pointer to an ms_drive object from `Microsoft365R`
-#' @param filter 
 #' @return Named list of `Microsoft365R::ms_drive_item`'s shared with user.
 #' @export
 #' @examples
