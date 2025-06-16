@@ -2,7 +2,9 @@
 
 Load shared data directly from OneDrive to R.
 
-This is not published to CRAN at present. To install please use `devtools::install_github('vubiostat/OneDrive2R')`.
+This is not published to CRAN at present. To install please use:
+
+`devtools::install_github('vubiostat/OneDrive2R')`.
 
 ## FAQ
 
