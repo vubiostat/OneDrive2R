@@ -26,6 +26,7 @@
 #' 
 #' @param url A string that is the url of note.
 #' @return The path contained within the url.
+#' @importFrom utils URLdecode
 #' @export
 #' @importFrom stringr str_match
 #' @examples
@@ -40,5 +41,5 @@ link_path <- function(url)
   coll <- checkmate::makeAssertCollection()
   checkmate::assert_string(x = url, add = coll)
   checkmate::reportAssertions(coll)
-  stringr::str_match(url, "Documents/(.+)\\?d=")[,2]
+  URLdecode(stringr::str_match(url, "Documents/(.+)\\?d=")[,2])
 }

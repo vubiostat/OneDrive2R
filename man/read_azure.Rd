@@ -9,7 +9,7 @@ read_azure(drive, path, FUN = NULL, ...)
 \arguments{
 \item{drive}{A pointer to an ms_drive object from \code{Microsoft365R}}
 
-\item{path}{The path to the file.}
+\item{path}{The path to the file. See details.}
 
 \item{FUN}{The function to read the data into memory. The default will make a guess of supported type from the filename extension.}
 
@@ -28,6 +28,35 @@ or private identifiable information (PII).
 Unfortunately, if one accesses a OneDrive file via the file system it will
 copy the file locally and switch it to 'sync' mode. To get rid of the file
 requires a manual removal and turning off 'sync' mode.
+
+The path can be difficult to find. If one navigates to the data file to read
+in SharePoint (the web interface to OneDrive) and clicks the \dots next to
+the file name, the bottom most menu item is 'Details'. Clicking this and
+another interface opens to the right and the bottom most right corner has
+a 'More Details' option. Clicking on that will bring up more options and
+there exists a 'Path' option with a double square next to it to copy
+the path to the clipboard. The path it copies will not be the correct
+path--it will contain additional directories (usually about 3) that need
+to be removed before using. In the examples below the path returned was
+'/personal/shawn_garbett_vumc_org/Documents/CQS\%20Cloud\%20Team/Project\%20Artifacts/def.csv',
+which needs to be shortened and '\%20' replaced with space to result 'CQS Cloud Team/Project Artifacts/def.csv'.
+
+One can see the top level directories one
+owns from \code{\link{owned_azure}} or shared \code{\link{shared_azure}}.
+
+Example images of process from Windows
+
+After clicking the \dots on the file. Click on 'Details'.
+\if{html}{\figure{04winod_details.png}{options: width="95\%" alt="Figure: 04winod_details.png"}}
+\if{latex}{\figure{04winod_details.pdf}{options: width=18cm}}
+
+After clicking on 'Details', click on 'More details' in the lower right.
+\if{html}{\figure{05winod_moredetails.png}{options: width="95\%" alt="Figure: 05winod_moredetails.png"}}
+\if{latex}{\figure{05winod_moredetails.pdf}{options: width=18cm}}
+
+Click the copy 'Path' button (double square).
+\if{html}{\figure{06winod_copypath.png}{options: width="95\%" alt="Figure: 06winod_copypath.png"}}
+\if{latex}{\figure{06winod_copypath.pdf}{options: width=18cm}}
 }
 \examples{
 \dontrun{
@@ -35,4 +64,7 @@ library(Microsoft365R)
 drive <- get_business_onedrive(auth_type="device_code")
 data  <- read_azure(drive, "/SomeDir/sharedata.csv")
 }
+}
+\seealso{
+\code{\link{link_path}}, \code{\link{owned_azure}}, and \code{\link{shared_azure}}
 }
