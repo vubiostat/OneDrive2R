@@ -41,6 +41,8 @@ to be removed before using. In the examples below the path returned was
 '/personal/shawn_garbett_vumc_org/Documents/CQS\%20Cloud\%20Team/Project\%20Artifacts/def.csv',
 which needs to be shortened and '\%20' replaced with space to result 'CQS Cloud Team/Project Artifacts/def.csv'.
 
+Another option is to use the share URL. See \code{\link{link_path}}.
+
 One can see the top level directories one
 owns from \code{\link{owned_azure}} or shared \code{\link{shared_azure}}.
 

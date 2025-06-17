@@ -14,9 +14,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#' Named list of Microsoft365R items that are shared on OneDrive
+#' Named list of Microsoft365R items that are shared on OneDrive at the
+#' top level of a user's directory.
 #' 
-#' Retrieve a named list of shared OneDrive items given a drive authentication
+#' Retrieve a named list of shared OneDrive top level items given a drive authentication
 #' object.
 #' 
 #' @param drive A pointer to an ms_drive object from `Microsoft365R`

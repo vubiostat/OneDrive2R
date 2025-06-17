@@ -2,7 +2,8 @@
 % Please edit documentation in R/shared_azure.R
 \name{shared_azure}
 \alias{shared_azure}
-\title{Named list of Microsoft365R items that are shared on OneDrive}
+\title{Named list of Microsoft365R items that are shared on OneDrive at the
+top level of a user's directory.}
 \usage{
 shared_azure(drive)
 }
@@ -13,7 +14,7 @@ shared_azure(drive)
 Named list of \code{Microsoft365R::ms_drive_item}'s shared with user.
 }
 \description{
-Retrieve a named list of shared OneDrive items given a drive authentication
+Retrieve a named list of shared OneDrive top level items given a drive authentication
 object.
 }
 \examples{

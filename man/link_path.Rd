@@ -25,7 +25,7 @@ and is not guaranteed to work. It is provided as a hopefully helpful resource.
 \examples{
 # Construct URL inside R help constraints
 url <- paste0('https://vumc365-my.sharepoint.com/:x:/r/personal/',
-              '/first_last_company_org/Documents/TopFolder/SubFolder/abc.csv',
+              '/first_last_company_org/Documents/Top\%20Folder/Sub\%20Folder/abc.csv',
               '?d=asdfasdfasdfasdfasdfa2beb6&csf=1&web=1&e=PJBSO0x')
 link_path(url)
 }
