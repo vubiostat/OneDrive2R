@@ -32,7 +32,7 @@ requires a manual removal and turning off 'sync' mode.
 \examples{
 \dontrun{
 library(Microsoft365R)
-drive <- get_business_onedrive() # or drive_type="device_code")
+drive <- get_business_onedrive(auth_type="device_code")
 data  <- read_azure(drive, "/SomeDir/sharedata.csv")
 }
 }

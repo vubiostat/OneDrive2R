@@ -11,7 +11,7 @@ This is not published to CRAN at present. To install please use:
 ```
 library(OneDrive2R)
 library(Microsoft365R)
-drive <- get_business_onedrive(drive_type="device_code")
+drive <- get_business_onedrive(auth_type="device_code")
 names(shared(drive)) # Look at top level of shared files
 data  <- read.shared(drive, "/SomeDir/sharedata.csv")
 ```

@@ -34,7 +34,7 @@
 #' @examples
 #' \dontrun{
 #' library(Microsoft365R)
-#' drive <- get_business_onedrive() # or drive_type="device_code")
+#' drive <- get_business_onedrive(auth_type="device_code")
 #' item  <- get_item_azure(drive, "/SomeDir/sharedata.csv")
 #' }
 get_item_azure <- function(drive, path)
@@ -55,7 +55,7 @@ get_item_azure <- function(drive, path)
     items    <- shared_azure(drive)
     item     <- items[[ifelse(segments[1]=='.',filename,segments[1])]]
   
-    if(is.null(item)) stop(paste("Requested top level of path must be shared/owned name. Check: `names(shared(drive))`"))
+    if(is.null(item)) stop(paste("Requested top level of path must be shared/owned name. Check: `names(shared_azure(drive))`"))
     if(length(segments) > 1)
     {
       fp     <- do.call(file.path, as.list(c(segments[-1], filename)))

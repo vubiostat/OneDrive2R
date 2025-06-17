@@ -27,7 +27,7 @@ users to utilize the same simple function.
 \examples{
 \dontrun{
 library(Microsoft365R)
-drive <- get_business_onedrive() # or drive_type="device_code")
+drive <- get_business_onedrive(auth_type="device_code")
 item  <- get_item_azure(drive, "/SomeDir/sharedata.csv")
 }
 }

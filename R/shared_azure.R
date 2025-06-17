@@ -24,7 +24,7 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' drive <- get_business_onedrive() # or drive_type="device_code")
+#' drive <- get_business_onedrive(auth_type="device_code")
 #' names(shared(drive))
 #' }
 #' @importFrom checkmate makeAssertCollection assert_class reportAssertions
