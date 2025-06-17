@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_azure.R
 \name{read_azure}
 \alias{read_azure}
-\title{Read a data in a file from Azure OneDrive}
+\title{Read data in a file from Azure OneDrive to memory}
 \usage{
 read_azure(drive, path, FUN = NULL, ...)
 }
@@ -25,13 +25,14 @@ that one doesn't want stored to disk, e.g. private health information (PHI)
 or private identifiable information (PII).
 }
 \details{
-Unfortunately, if one "mounts" a OneDrive it will by DEFAULT
-copy the files locally. The files must be manually turned off to "sync".
+Unfortunately, if one accesses a OneDrive file via the file system it will
+copy the file locally and switch it to 'sync' mode. To get rid of the file
+requires a manual removal and turning off 'sync' mode.
 }
 \examples{
 \dontrun{
 library(Microsoft365R)
 drive <- get_business_onedrive() # or drive_type="device_code")
-data  <- read.shared(drive, "/SomeDir/sharedata.csv")
+data  <- read_azure(drive, "/SomeDir/sharedata.csv")
 }
 }

@@ -14,40 +14,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#' Microsoft365R items that are shared on drive
-#' 
-#' Retrieve a named list of shared OneDrive items given a drive authentication
-#' object.
-#' 
-#' @param drive A pointer to an ms_drive object from `Microsoft365R`
-#' @return Named list of `Microsoft365R::ms_drive_item`'s shared with user.
-#' @export
-#' @examples
-#' \dontrun{
-#' drive <- get_business_onedrive(drive_type="device_code")
-#' names(shared(drive))
-#' }
-#' @importFrom checkmate makeAssertCollection assert_class reportAssertions
-shared <- function(drive)
-{
-  coll <- checkmate::makeAssertCollection()
-  checkmate::assert_class(x = drive, add = coll, classes="ms_drive")
-  checkmate::reportAssertions(coll)
-  
-  items <- drive$list_shared_items(allow_external = TRUE)
-  names(items) <- sapply(items, function(x) x$properties$name)
-  items
-}
 
-#' Read a data in a file from Azure OneDrive
+#' Read data in a file from Azure OneDrive to memory
 #' 
 #' This function given a path will read a file that was shared or owned directly
 #' into memory. This is important if the file contains information
 #' that one doesn't want stored to disk, e.g. private health information (PHI)
 #' or private identifiable information (PII).
 #' 
-#' Unfortunately, if one "mounts" a OneDrive it will by DEFAULT
-#' copy the files locally. The files must be manually turned off to "sync". 
+#' Unfortunately, if one accesses a OneDrive file via the file system it will
+#' copy the file locally and switch it to 'sync' mode. To get rid of the file
+#' requires a manual removal and turning off 'sync' mode.
 #' 
 #' @param drive A pointer to an ms_drive object from `Microsoft365R`
 #' @param path The path to the file.
@@ -67,7 +44,7 @@ shared <- function(drive)
 #' \dontrun{
 #' library(Microsoft365R)
 #' drive <- get_business_onedrive() # or drive_type="device_code")
-#' data  <- read.shared(drive, "/SomeDir/sharedata.csv")
+#' data  <- read_azure(drive, "/SomeDir/sharedata.csv")
 #' }
 read_azure <- function(drive, path, FUN=NULL, ...)
 {
@@ -77,26 +54,8 @@ read_azure <- function(drive, path, FUN=NULL, ...)
   checkmate::assert_function(x = FUN, add = coll, null.ok = TRUE)
   checkmate::reportAssertions(coll)
   
-  # Try the easy path first
-  item     <- tryCatch(drive$get_item(path), silent=TRUE, error=function(e) NULL)
-  filename <- basename(path)
-  
-  # Do the shared search
-  if(is.null(item))
-  {
-    segments <- strsplit(dirname(path), "/")[[1]]
-    items    <- shared(drive)
-    item     <- items[[ifelse(segments[1]=='.',filename,segments[1])]]
-  
-    if(is.null(item)) stop(paste("Requested top level of path must be shared/owned name. Check: `names(shared(drive))`"))
-    if(length(segments) > 1)
-    {
-      fp     <- do.call(file.path, as.list(c(segments[-1], filename)))
-      item   <- item$get_item(fp) # Request rest of path
-    }
-  }
-
-  ext <- tolower(tools::file_ext(filename))
+  item <- get_item_azure(drive, path)
+  ext  <- tolower(tools::file_ext(basename(path)))
   if(is.null(FUN))
   {
     FUN <- switch(ext,

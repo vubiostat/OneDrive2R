@@ -20,7 +20,8 @@ Imports:
     checkmate,
     Microsoft365R,
     readxl,
-    foreign
+    foreign,
+    yaml
 LazyLoad: yes
 Suggests: testthat (>= 3.0.0)
 URL: https://github.com/vubiostat/OneDrive2R
