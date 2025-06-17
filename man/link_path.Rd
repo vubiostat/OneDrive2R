@@ -14,7 +14,9 @@ The path contained within the url.
 }
 \description{
 Given a shared item link from OneDrive extract the path to use for
-retrieval via Microsoft365R's API.
+retrieval via Microsoft365R's API. The file must be shared and then the link
+must come from the web interface by clicking the "\dots > Copy Link". It does
+not work from a link for an owned file.
 }
 \details{
 Note: This function is based on observation of links from Microsoft

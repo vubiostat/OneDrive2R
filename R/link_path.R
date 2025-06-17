@@ -17,7 +17,9 @@
 #' Extract Azure path from a shared URL link
 #' 
 #' Given a shared item link from OneDrive extract the path to use for
-#' retrieval via Microsoft365R's API.
+#' retrieval via Microsoft365R's API. The file must be shared and then the link
+#' must come from the web interface by clicking the "\dots > Copy Link". It does
+#'  not work from a link for an owned file. 
 #' 
 #' Note: This function is based on observation of links from Microsoft
 #' and is not guaranteed to work. It is provided as a hopefully helpful resource.
