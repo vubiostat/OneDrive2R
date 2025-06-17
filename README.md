@@ -53,14 +53,14 @@ The simplest is if one can load it on Windows using a letter drive path, then it
 Look for the green check or filled green circle on the file to see that 
 OneDrive is writing the file locally.
 
-![Local](https://github.com/vubiostat/OneDrive2R/blob/main/inst/images/01winod_local.png)
+![Local](./inst/images/01winod_local.png)
 
-![Always](https://github.com/vubiostat/OneDrive2R/blob/main/inst/images/02winod_always.png)
+![Always](./inst/images/02winod_always.png)
 
 The Cloud Icon displays when 'sync' is turned off and it is not writing 
-the file onto the local drive.
+the file onto the local drive. This is done by selecting "Free up space".
 
-![Free](https://github.com/vubiostat/OneDrive2R/blob/main/inst/images//03winod_free.png)
+![Free](./inst/images/03winod_free.png)
 
 ### _Is there anything else I should do?_
 
