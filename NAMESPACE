@@ -2,6 +2,7 @@
 
 export(get_item_azure)
 export(link_path)
+export(owned_azure)
 export(read_azure)
 export(shared_azure)
 importFrom(Microsoft365R,ms_drive_item)

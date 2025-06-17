@@ -19,6 +19,6 @@ object.
 \examples{
 \dontrun{
 drive <- get_business_onedrive(auth_type="device_code")
-names(shared(drive))
+names(shared_azure(drive))
 }
 }

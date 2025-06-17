@@ -14,27 +14,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-#' Named list of Microsoft365R items that are shared on OneDrive
+#' Named list of Microsoft365R items that are owned on OneDrive
 #' 
-#' Retrieve a named list of shared OneDrive items given a drive authentication
+#' Retrieve a named list of owned OneDrive items given a drive authentication
 #' object.
 #' 
 #' @param drive A pointer to an ms_drive object from `Microsoft365R`
-#' @return Named list of `Microsoft365R::ms_drive_item`'s shared with user.
+#' @return Named list of `Microsoft365R::ms_drive_item`'s owned by user.
 #' @export
 #' @examples
 #' \dontrun{
 #' drive <- get_business_onedrive(auth_type="device_code")
-#' names(shared_azure(drive))
+#' names(owned_azure(drive))
 #' }
 #' @importFrom checkmate makeAssertCollection assert_class reportAssertions
-shared_azure <- function(drive)
+owned_azure <- function(drive)
 {
   coll <- checkmate::makeAssertCollection()
   checkmate::assert_class(x = drive, add = coll, classes="ms_drive")
   checkmate::reportAssertions(coll)
   
-  items <- drive$list_shared_items(allow_external = TRUE)
+  items <- drive$list_items()
+  items <- apply(items, 1, function(x) drive$get_item(x['name']))
   names(items) <- sapply(items, function(x) x$properties$name)
   items
 }
