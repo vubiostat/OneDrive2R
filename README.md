@@ -53,14 +53,14 @@ The simplest is if one can load it on Windows using a letter drive path, then it
 Look for the green check or filled green circle on the file to see that 
 OneDrive is writing the file locally.
 
-![Local](inst/images/01winod_local.png =845x699)
+![Local](./inst/images/01winod_local.png =845x699)
 
-![Always](inst/images/02winod_always.png =845x699)
+![Always](./inst/images/02winod_always.png =845x699)
 
 The Cloud Icon displays when 'sync' is turned off and it is not writing 
 the file onto the local drive.
 
-![Free](inst/images/03winod_free.png =845x699)
+![Free](./inst/images/03winod_free.png =845x699)
 
 ### _Is there anything else I should do?_
 
