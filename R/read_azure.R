@@ -16,7 +16,7 @@
 
 #' Microsoft365R items that are shared on drive
 #' 
-#' Retrieve a list of shared OneDrive items given a drive authentication
+#' Retrieve a named list of shared OneDrive items given a drive authentication
 #' object.
 #' 
 #' @param drive A pointer to an ms_drive object from `Microsoft365R`
@@ -60,14 +60,15 @@ shared <- function(drive)
 #' @importFrom foreign read.arff read.dbf read.dta read.octave read.mtp read.spss read.systat read.xport
 #' @importFrom stats read.ftable
 #' @importFrom readxl read_excel
+#' @importFrom yaml read_yaml
+#' @importFrom checkmate makeAssertCollection assert_class assert_string assert_function reportAssertions
 #' @export
 #' @examples
 #' \dontrun{
 #' library(Microsoft365R)
-#' drive <- get_business_onedrive(drive_type="device_code")
+#' drive <- get_business_onedrive() # or drive_type="device_code")
 #' data  <- read.shared(drive, "/SomeDir/sharedata.csv")
 #' }
-#' @importFrom checkmate makeAssertCollection assert_class assert_string assert_function reportAssertions
 read_azure <- function(drive, path, FUN=NULL, ...)
 {
   coll <- checkmate::makeAssertCollection()
@@ -115,6 +116,8 @@ read_azure <- function(drive, path, FUN=NULL, ...)
       xls   = ,
       xlsx  = readxl::read_excel,
       xpt   = foreign::read.xport,
+      yml   = ,
+      yaml  = yaml::read_yaml,
       NULL
     )
     if(is.null(FUN)) stop(paste0("Unhandled File Extension '", ext, "'"))

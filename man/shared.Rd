@@ -13,7 +13,7 @@ shared(drive)
 Named list of \code{Microsoft365R::ms_drive_item}'s shared with user.
 }
 \description{
-Retrieve a list of shared OneDrive items given a drive authentication
+Retrieve a named list of shared OneDrive items given a drive authentication
 object.
 }
 \examples{

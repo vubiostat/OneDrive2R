@@ -31,7 +31,7 @@ copy the files locally. The files must be manually turned off to "sync".
 \examples{
 \dontrun{
 library(Microsoft365R)
-drive <- get_business_onedrive(drive_type="device_code")
+drive <- get_business_onedrive() # or drive_type="device_code")
 data  <- read.shared(drive, "/SomeDir/sharedata.csv")
 }
 }
