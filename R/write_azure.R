@@ -20,8 +20,7 @@
 #' This function given a path will write a file to OneDrive from memory.
 #' 
 #' If \code{FUN} is \code{NULL} it will guess based on file extension. It 
-#' supports: arff, csv, dbf, dta, m, mtp, rds, rdata, rec, spss, syd, sys,
-#' table, xls, xlsx, xpt, yml, and yaml. 
+#' supports: arff, csv, dbf, dta, rds, rdata, rec, table, yml, and yaml. 
 #' 
 #' @param drive A pointer to an ms_drive object from `Microsoft365R`
 #' @param x The data to be written.
