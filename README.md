@@ -1,6 +1,6 @@
 # OneDrive2R
 
-Load shared data directly from OneDrive to R.
+Load shared or owned data directly from OneDrive into R memory.
 
 This is not published to CRAN at present. To install please use:
 
@@ -38,7 +38,9 @@ New files from the cloud are online-only by default, not taking up disk space. F
 Having confidential data containing private health information (PHI) or private identifying information (PII) on a portable computing device is a security risk.
 Some institutions even mandate by policy that PHI/PII are never stored on a portable computing device. At odds with this is when Microsoft OneDrive/SharePoint is an approved method of data storage and access because by _default_  any data access locally writes it to disk! This is a seemingly impossible to comply with situation when needing to analyze confidential data in a secure manner using R when it's stored in OneDrive.
 
-This package loads the data directly into memory in an R environment. Giving the user peace of mind about utilizing good security practices around sensitive data and keeping it off disk.
+This package loads the data into memory in R without triggering
+the sync to disk. One can have peace of mind about utilizing good security practices around sensitive data and keeping it off disk.
+
 
 ### _How do I find the path to shared file?_
 
@@ -50,14 +52,14 @@ Now that one is aware of the danger, how can one tell if it is getting written l
 
 The simplest is if one can load it on Windows using a letter drive path, then it is stored locally. 
 
-Look for the green check or filled green circle on the file to see that 
-OneDrive is writing the file locally.
+Another is to look for the green check or filled green circle on the file via
+the file explorer to see that OneDrive is writing the file locally.
 
 ![Local](./inst/images/01winod_local.png)
 
 ![Always](./inst/images/02winod_always.png)
 
-The Cloud Icon displays when 'sync' is turned off and it is not writing 
+The Cloud Icon displays when 'sync' is turned _off_ and it is not writing 
 the file onto the local drive. This is done by selecting "Free up space".
 
 ![Free](./inst/images/03winod_free.png)
@@ -65,6 +67,8 @@ the file onto the local drive. This is done by selecting "Free up space".
 ### _Is there anything else I should do?_
 
 R asks when exiting if one should save the session to disk. This is equivalent once again to writing sensitive data to disk, and is a bad security practice. It is recommended to disable this feature globally to prevent accidentally spooling of PHI/PII to disk. 
+
+For [RStudio](https://posit.co/downloads/) users, "Tools > Global Options > General > Workspace > Save Workspace to .RData on exit" should be set to Never. 
 
 For base R the following can be ensured using `usethis::edit_r_profile()` and adding this code:
 
@@ -79,8 +83,6 @@ utils::assignInNamespace(oldfun, newfun, ns = pkg, envir = pkgenv)
 assign(oldfun, newfun, pkgenv)
 lockBinding(oldfun, pkgenv)
 ```
-
-For [RStudio](https://posit.co/downloads/) users, "Tools > Global Options > General > Workspace > Save Workspace to .RData on exit" should be set to Never. 
 
 ### It doesn't support my needs for XXX easily
 

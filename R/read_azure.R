@@ -18,13 +18,17 @@
 #' Read data in a file from Azure OneDrive to memory
 #' 
 #' This function given a path will read a file that was shared or owned directly
-#' into memory. This is important if the file contains information
+#' into memory (via a tmp file). This is important if the file contains information
 #' that one doesn't want stored to disk, e.g. private health information (PHI)
 #' or private identifiable information (PII).
 #' 
+#' If \code{FUN} is \code{NULL} it will guess based on file extension. It 
+#' supports: arff, csv, dbf, dta, m, mtp, rds, rdata, rec, spss, syd, sys,
+#' table, xls, xlsx, xpt, yml, and yaml. 
+#' 
 #' Unfortunately, if one accesses a OneDrive file via the file system it will
 #' copy the file locally and switch it to 'sync' mode. To get rid of the file
-#' requires a manual removal and turning off 'sync' mode.
+#' requires a manual removal and turning off 'sync' mode via the file explorer.
 #' 
 #' The path can be difficult to find. If one navigates to the data file to read
 #' in SharePoint (the web interface to OneDrive) and clicks the \dots next to
@@ -59,7 +63,12 @@
 #' 
 #' @param drive A pointer to an ms_drive object from `Microsoft365R`
 #' @param path The path to the file. See details.
-#' @param FUN The function to read the data into memory. The default will make a guess of supported type from the filename extension.
+#' @param FUN The function to read the data into memory. The default will make a
+#' guess of supported type from the filename extension. The first argument to
+#' the function should be what would normally be the file. This function
+#' defaults to NULL and when that is the case the routine will make a guess
+#' based on the file extension, e.g. if the extension is ".csv" it will use
+#' R's \code{\link{read.csv}}. 
 #' @param \dots Additional arguments to pass to the function that reads the data into memory.
 #' @return An R object containing the requested data.
 #' 
