@@ -92,6 +92,6 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
   conn <- rawConnection(raw(0), "rw")
   # on.exit(close(conn)) apparently upload does this?
   FUN(x, conn, ...)
-  seek(conn, 0)
+  seek(conn, 0, rw="read")
   item$upload(src = conn, dest=filename)
 }
