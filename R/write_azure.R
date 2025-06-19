@@ -89,7 +89,7 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
     if(is.null(FUN)) stop(paste0("Unhandled File Extension '", ext, "'"))
   }
   
-  conn <- rawConnection(raw(0), "rw")
+  conn <- rawConnection(raw(0), "w+")
   # on.exit(close(conn)) apparently upload does this?
   FUN(x, conn, ...)
   seek(conn, 0, rw="read")
