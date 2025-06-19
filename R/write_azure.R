@@ -73,7 +73,7 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
   if(is.null(FUN))
   {
     outer_name <- as.character(substitute(x))
-    call_env   <- as.environment(-1)
+    call_env   <- parent.frame()
     FUN <- switch(
       ext,
       arff  = foreign::write.arff,
