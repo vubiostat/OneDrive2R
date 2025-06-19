@@ -60,8 +60,10 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
   filename <- basename(path)
   path     <- dirname(path)
   ext      <- tolower(tools::file_ext(filename))
-  item     <- get_item_azure(drive, path) 
-  
+  item     <- if(path == '.') 
+                get_item_azure(drive, filename)$get_parent_folder() else
+                get_item_azure(path)
+
   if(is.null(FUN) && ext=='')
     stop("Cannot guess file handling with no file extension.")
   if(!item$is_folder())
@@ -88,7 +90,8 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
   }
   
   conn <- rawConnection(raw(0), "w+")
-  on.exit(close(conn))
+  # on.exit(close(conn)) apparently upload does this?
   FUN(x, conn, ...)
+  seek(conn, 0)
   item$upload(src = conn, dest=filename)
 }
