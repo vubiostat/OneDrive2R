@@ -61,8 +61,8 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
   path     <- dirname(path)
   ext      <- tolower(tools::file_ext(filename))
   item     <- if(path == '.') 
-                get_item_azure(drive, filename)$get_parent_folder() else
-                get_item_azure(path)
+                drive$get_item("/")         else
+                get_item_azure(drive, path)
 
   if(is.null(FUN) && ext=='')
     stop("Cannot guess file handling with no file extension.")
@@ -72,7 +72,8 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
   # If FUN is NULL, guess based on extension
   if(is.null(FUN))
   {
-    outer_name <- as.character(subsitute(x))
+    outer_name <- as.character(substitute(x))
+    call_env   <- as.environment(-1)
     FUN <- switch(
       ext,
       arff  = foreign::write.arff,
@@ -80,7 +81,9 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
       dbf   = foreign::write.dbf,
       dta   = foreign::write.dta,
       rds   = saveRDS,
-      rdata = function(x, file, ...) save(get(list=outer_name, envir=as.environment(-1)), file = file, ...),
+      rdata = function(x, file, ...) {
+        save(list=outer_name, envir=call_env, file = file, ...)
+      },
       rec   = foreign::write.epiinfo,
       table = stats::write.ftable,
       yml   = ,
@@ -91,7 +94,6 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
   }
   
   conn <- rawConnection(raw(0), "w+")
-  # on.exit(close(conn)) apparently upload does this?
   FUN(x, conn, ...)
   seek(conn, 0, rw="read")
   item$upload(src = conn, dest=filename)

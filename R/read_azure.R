@@ -99,6 +99,7 @@ read_azure <- function(drive, path, FUN=NULL, ...)
   ext  <- tolower(tools::file_ext(basename(path)))
   if(is.null(FUN))
   {
+    call_env <- parent.frame()
     FUN <- switch(ext,
       arff  = foreign::read.arff,
       csv   = utils::read.csv,
@@ -107,7 +108,7 @@ read_azure <- function(drive, path, FUN=NULL, ...)
       m     = foreign::read.octave,
       mtp   = foreign::read.mtp,
       rds   = readRDS,
-      rdata = load,
+      rdata = function(file, ...) load(file, envir=call_env, ...),
       rec   = foreign::read.epiinfo,
       spss  = foreign::read.spss,
       syd   = ,
