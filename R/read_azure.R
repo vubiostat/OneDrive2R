@@ -99,6 +99,8 @@ read_azure <- function(drive, path, FUN=NULL, ...)
   ext  <- tolower(tools::file_ext(basename(path)))
   if(is.null(FUN))
   {
+    if(ext=='') stop("Cannot guess file handling with no file extension.")
+    
     call_env <- parent.frame()
     FUN <- switch(ext,
       arff  = foreign::read.arff,
