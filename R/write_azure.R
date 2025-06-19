@@ -72,6 +72,7 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
   # If FUN is NULL, guess based on extension
   if(is.null(FUN))
   {
+    outer_name <- as.character(subsitute(x))
     FUN <- switch(
       ext,
       arff  = foreign::write.arff,
@@ -79,7 +80,7 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
       dbf   = foreign::write.dbf,
       dta   = foreign::write.dta,
       rds   = saveRDS,
-      rdata = function(x, file, ...) save(x, file=file, ...), # FIXME Need to preserve variable name
+      rdata = function(x, file, ...) save(get(list=outer_name, envir=as.environment(-1)), file = file, ...),
       rec   = foreign::write.epiinfo,
       table = stats::write.ftable,
       yml   = ,
