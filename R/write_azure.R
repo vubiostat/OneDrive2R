@@ -57,16 +57,14 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
   checkmate::reportAssertions(coll)
   
   filename <- basename(path)
-
-  # TODO: path <- everything but filename
+  path     <- dirname(path)
+  ext      <- tolower(tools::file_ext(filename))
+  item     <- get_item_azure(drive, path) 
   
-  ext <- tolower(tools::file_ext(filename))
-  
-  # TODO: Check that extension exists if FUN is NULL
-  
-  item <- get_item_azure(drive, path) 
-  
-  # TODO: Check that item is a folder
+  if(is.null(FUN) && ext=='')
+    stop("Cannot guess file handling with no file extension.")
+  if(!item$is_folder())
+    stop("ms_drive_item found is not a folder.")
   
   # If FUN is NULL, guess based on extension
   if(is.null(FUN))
