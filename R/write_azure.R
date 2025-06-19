@@ -84,7 +84,6 @@ write_azure <- function(drive, x, path, FUN=NULL, ...)
       rdata = function(x, file, ...) {
         save(list=outer_name, envir=call_env, file = file, ...)
       },
-      rec   = foreign::write.epiinfo,
       table = stats::write.ftable,
       yml   = ,
       yaml  = yaml::write_yaml,
