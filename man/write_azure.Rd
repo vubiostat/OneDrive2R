@@ -15,7 +15,8 @@ write_azure(drive, x, path, FUN = NULL, ...)
 
 \item{FUN}{The function to read the data into memory. The default will make a
 guess of supported type from the filename extension. The first argument to
-the function should be what would normally be the file. This function
+the function must be the data. The second argument is what would normally be
+the file (it will be a \code{\link{rawConnection}}). This function
 defaults to NULL and when that is the case the routine will make a guess
 based on the file extension, e.g. if the extension is ".csv" it will use
 R's \code{\link{write.csv}}.}
